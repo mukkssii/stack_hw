@@ -1,4 +1,5 @@
 #include <iostream>
+#include <stdexcept> 
 using namespace std;
 
 class Stack {
@@ -9,6 +10,10 @@ private:
 
 public:
     Stack(int size) {
+        if (size <= 0) {
+            throw invalid_argument("Incorrect stack size");
+        }
+
         _size = size;
         _count = 0;
         _arr = new char[size];
@@ -20,8 +25,7 @@ public:
 
     void Push(char symbol) {
         if (_count == _size) {
-            cout << "full" << endl;
-            return;
+            throw overflow_error("Stack is full");
         }
 
         _arr[_count] = symbol;
@@ -30,8 +34,7 @@ public:
 
     void Pop() {
         if (_count == 0) {
-            cout << "empty" << endl;
-            return;
+            throw underflow_error("Stack is empty");
         }
 
         _count--;
@@ -42,21 +45,11 @@ public:
     }
 
     bool IsEmpty() {
-        if (_count == 0) {
-            return true;
-        }
-        else {
-            return false;
-        }
+        return _count == 0;
     }
 
     bool IsFull() {
-        if (_count == _size) {
-            return true;
-        }
-        else {
-            return false;
-        }
+        return _count == _size;
     }
 
     void Clear() {
@@ -65,8 +58,7 @@ public:
 
     char Peek() {
         if (_count == 0) {
-            cout << "empty" << endl;
-            return '\0';
+            throw underflow_error("Stack is empty");
         }
 
         return _arr[_count - 1];
@@ -101,7 +93,21 @@ public:
 };
 
 int main() {
-    Stack s(3);
+    try {
+        Stack s(3);
+
+        s.Push('a');
+        s.Push('b');
+        s.Push('C');
+        cout << "last element: " << s.Peek() << endl;
+        s.PushDynamic('D');
+        cout << "Count: " << s.GetCount() << endl;
+        s.Pop();
+        cout << "Top element: " << s.Peek() << endl;
+    }
+    catch (const exception& e) {
+        cout << "Error: " << e.what() << endl;
+    }
 
 
 
